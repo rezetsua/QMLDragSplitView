@@ -17,6 +17,7 @@ DropArea {
     property color windowColor: "transparent"
 
     implicitHeight: splitV.height/splitV.children.length
+    anchors.fill: dockButton.state === "docked" ? undefined : parent
 
     onEntered: {
         // Не дает вынести последний объект из SplitView
@@ -68,10 +69,7 @@ DropArea {
             id: dragHandler
             cursorShape: Qt.ClosedHandCursor
 
-            onActiveChanged: {
-                rect.oldWidth = rect.width
-                rect.oldHeight = rect.height
-            }
+            onActiveChanged: updateOldSize()
         }
 
         Drag.active: dragHandler.active
@@ -121,7 +119,14 @@ DropArea {
                 }
             }
 
-            onClicked: dockButton.state === "docked" ? dockButton.state = "undocked" : dockButton.state = "docked"
+            onClicked: {
+                if (dockButton.state === "docked") {
+                    updateOldSize()
+                    dockButton.state = "undocked"
+                }
+                else
+                    dockButton.state = "docked"
+            }
         }
     }
 
@@ -130,8 +135,8 @@ DropArea {
 
         x: targetItem.x; y: targetItem.y
         width: targetItem.width; height: targetItem.height
-        minimumHeight: targetItem.height
-        minimumWidth: targetItem.width
+        minimumHeight: rect.oldHeight
+        minimumWidth: rect.oldWidth
         visible: false
         title: windowTitle
 
@@ -148,5 +153,10 @@ DropArea {
             anchors.fill: parent
             color: windowColor
         }
+    }
+
+    function updateOldSize() {
+        rect.oldWidth = rect.width
+        rect.oldHeight = rect.height
     }
 }
