@@ -38,8 +38,11 @@ DropArea {
     Rectangle {
         id: rect
 
-        width: parent.width
-        height: parent.height
+        property int oldWidth: 0
+        property int oldHeight: 0
+
+        width: dragHandler.active ? oldWidth : parent.width
+        height: dragHandler.active ? oldHeight : parent.height
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         color: root.color
@@ -64,6 +67,11 @@ DropArea {
         DragHandler {
             id: dragHandler
             cursorShape: Qt.ClosedHandCursor
+
+            onActiveChanged: {
+                rect.oldWidth = rect.width
+                rect.oldHeight = rect.height
+            }
         }
 
         Drag.active: dragHandler.active
@@ -74,6 +82,7 @@ DropArea {
         // Для отслеживания координат курсора
         MouseArea {
             id: ma
+            cursorShape: dragHandler.active ? Qt.ClosedHandCursor : Qt.ArrowCursor
             anchors.fill: parent
         }
 
