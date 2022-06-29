@@ -38,8 +38,7 @@ Window {
 
         // Вертикальный левый
         Item {
-            SplitView.preferredWidth: parent.width/2
-            SplitView.fillHeight: true
+            implicitWidth: parent.width/2
 
             SplitView {
                 id: sp1
@@ -48,18 +47,12 @@ Window {
                 handle: splitHandle
 
                 Element {
-                    SplitView.fillWidth: true
-                    SplitView.fillHeight: true
-
                     visualIndex: 0
                     splitV: sp1
                     color: "red"
                 }
 
                 Element {
-                    SplitView.fillWidth: true
-                    SplitView.fillHeight: true
-
                     visualIndex: 1
                     splitV: sp1
                     color: "blue"
@@ -75,9 +68,6 @@ Window {
 
         // Вертикальный правый
         Item {
-            SplitView.fillWidth: true
-            SplitView.fillHeight: true
-
             SplitView {
                 id: sp2
                 anchors.fill: parent
@@ -85,18 +75,12 @@ Window {
                 handle: splitHandle
 
                 Element {
-                    SplitView.fillWidth: true
-                    SplitView.fillHeight: true
-
                     visualIndex: 0
                     splitV: sp2
                     color: "green"
                 }
 
                 Element {
-                    SplitView.fillWidth: true
-                    SplitView.fillHeight: true
-
                     visualIndex: 1
                     splitV: sp2
                     color: "yellow"
