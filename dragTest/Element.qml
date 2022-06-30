@@ -72,6 +72,15 @@ DropArea {
 
         DragHandler {
             id: dragHandler
+            enabled: {
+                if (lastElement)
+                    return false
+                else if (dockButton.state === "undocked")
+                    return false
+                else
+                    return true
+            }
+
             cursorShape: Qt.ClosedHandCursor
 
             onActiveChanged: updateOldSize()
@@ -102,7 +111,6 @@ DropArea {
                 State {
                     name: "undocked"
                     ParentChange { target: targetItem; parent: undockedParent; x: 0; y: 0 }
-                    PropertyChanges { target: dragHandler; enabled: false }
                 },
                 State {
                     name: "docked"
@@ -116,6 +124,7 @@ DropArea {
                     undockedWindow.visible = false
                     splitV.insertItem(root.visualIndex, root)
                     splitV.updateIndex()
+                    lastElement = false
                 }
                 // Удаляет элемент из SplitView
                 else {
@@ -126,11 +135,13 @@ DropArea {
             }
 
             onClicked: {
-                // Не дает убрать последний элемент из SplitView
                 if (splitV.children.length === 1
                         && (splitView.children[0].visible === false
-                            || splitView.children[1].visible === false)
-                        && dockButton.state === "docked")
+                            || splitView.children[1].visible === false))
+                    lastElement = true
+
+                // Не дает убрать последний элемент из SplitView
+                if (lastElement && dockButton.state === "docked")
                     return
 
                 if (dockButton.state === "docked") {

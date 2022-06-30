@@ -7,6 +7,8 @@ import QtGraphicalEffects 1.15
 Window {
     id: mainWindow
 
+    property bool lastElement: false
+
     title: qsTr("Draggable Split View")
     minimumWidth: 800
     minimumHeight: 800
@@ -19,17 +21,24 @@ Window {
         anchors.bottomMargin: 20
         spacing: 0
 
-        DropArea {
+        Rectangle {
+            id: leftDropRect
+
             Layout.fillHeight: true
             Layout.preferredWidth: 20
+            color: "transparent"
+            opacity: 0.5
 
-            onEntered: {
-                if (!sp1.parent.visible) {
-                    sp1.parent.visible = true
-                    var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
-                    drag.source.parent.splitV.updateIndex()
-                    item.splitV = sp1
-                    sp1.insertItem(0, item)
+            DropArea {
+                anchors.fill: parent
+                onEntered: {
+                    if (!sp1.parent.visible) {
+                        sp1.parent.visible = true
+                        var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
+                        drag.source.parent.splitV.updateIndex()
+                        item.splitV = sp1
+                        sp1.insertItem(0, item)
+                    }
                 }
             }
         }
@@ -46,6 +55,7 @@ Window {
             Item {
                 implicitWidth: parent.width/2
                 SplitView.minimumWidth: 50
+                onVisibleChanged: leftDropRect.color = visible ? "transparent" : "lightcoral"
 
                 SplitView {
                     id: sp1
@@ -77,6 +87,7 @@ Window {
             // Вертикальный правый
             Item {
                 SplitView.minimumWidth: 50
+                onVisibleChanged: rightDropRect.color = visible ? "transparent" : "lightcoral"
 
                 SplitView {
                     id: sp2
@@ -106,17 +117,24 @@ Window {
             }
         }
 
-        DropArea {
+        Rectangle {
+            id: rightDropRect
+
             Layout.fillHeight: true
             Layout.preferredWidth: 20
+            color: "transparent"
+            opacity: 0.5
 
-            onEntered: {
-                if (!sp2.parent.visible) {
-                    sp2.parent.visible = true
-                    var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
-                    drag.source.parent.splitV.updateIndex()
-                    item.splitV = sp2
-                    sp2.insertItem(0, item)
+            DropArea {
+                anchors.fill: parent
+                onEntered: {
+                    if (!sp2.parent.visible) {
+                        sp2.parent.visible = true
+                        var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
+                        drag.source.parent.splitV.updateIndex()
+                        item.splitV = sp2
+                        sp2.insertItem(0, item)
+                    }
                 }
             }
         }
