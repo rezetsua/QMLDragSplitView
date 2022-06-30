@@ -13,86 +13,110 @@ Window {
     visible: true
     color: "dimgrey"
 
-    Component {
-        id: splitHandle
+    RowLayout {
+        anchors.fill: parent
+        anchors.topMargin: 20
+        anchors.bottomMargin: 20
+        spacing: 0
 
-        Rectangle {
-            implicitWidth: 5
-            implicitHeight: 5
-            color: SplitHandle.pressed ? "#81e889" : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+        DropArea {
+            Layout.fillHeight: true
+            Layout.preferredWidth: 20
+
+            onEntered: {
+                if (!sp1.parent.visible) {
+                    sp1.parent.visible = true
+                    var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
+                    drag.source.parent.splitV.updateIndex()
+                    item.splitV = sp1
+                    sp1.insertItem(0, item)
+                }
+            }
         }
-    }
 
-    MouseArea {
-        id: splitViewMA
-        anchors.fill: parent
-    }
+        SplitView {
+            id: splitView
 
-    SplitView {
-        id: splitView
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            orientation: Qt.Horizontal
+            handle: Handle {color: "lightgrey"}
 
-        anchors.fill: parent
-        anchors.margins: 20
-        orientation: Qt.Horizontal
-        handle: splitHandle
+            // Вертикальный левый
+            Item {
+                implicitWidth: parent.width/2
+                SplitView.minimumWidth: 50
 
-        // Вертикальный левый
-        Item {
-            implicitWidth: parent.width/2
-            SplitView.minimumWidth: 50
+                SplitView {
+                    id: sp1
+                    anchors.fill: parent
+                    orientation: Qt.Vertical
+                    handle: Handle {color: "darkgrey"}
 
-            SplitView {
-                id: sp1
-                anchors.fill: parent
-                orientation: Qt.Vertical
-                handle: splitHandle
+                    Element {
+                        visualIndex: 0
+                        splitV: sp1
+                        color: "red"
+                    }
 
-                Element {
-                    visualIndex: 0
-                    splitV: sp1
-                    color: "red"
+                    Element {
+                        visualIndex: 1
+                        splitV: sp1
+                        color: "blue"
+                    }
+
+                    function updateIndex() {
+                        if (!sp1.visible)
+                            return
+                        for (var i = 0; i < sp1.children.length; ++i)
+                            sp1.itemAt(i).visualIndex = i
+                    }
                 }
+            }
 
-                Element {
-                    visualIndex: 1
-                    splitV: sp1
-                    color: "blue"
-                }
+            // Вертикальный правый
+            Item {
+                SplitView.minimumWidth: 50
 
-                function updateIndex() {
-                    for (var i = 0; i < sp1.children.length; ++i) {
-                        sp1.itemAt(i).visualIndex = i
+                SplitView {
+                    id: sp2
+                    anchors.fill: parent
+                    orientation: Qt.Vertical
+                    handle: Handle {color: "darkgrey"}
+
+                    Element {
+                        visualIndex: 0
+                        splitV: sp2
+                        color: "green"
+                    }
+
+                    Element {
+                        visualIndex: 1
+                        splitV: sp2
+                        color: "yellow"
+                    }
+
+                    function updateIndex() {
+                        if (!sp2.visible)
+                            return
+                        for (var i = 0; i < sp2.children.length; ++i)
+                            sp2.itemAt(i).visualIndex = i
                     }
                 }
             }
         }
 
-        // Вертикальный правый
-        Item {
-            SplitView.minimumWidth: 50
+        DropArea {
+            Layout.fillHeight: true
+            Layout.preferredWidth: 20
 
-            SplitView {
-                id: sp2
-                anchors.fill: parent
-                orientation: Qt.Vertical
-                handle: splitHandle
-
-                Element {
-                    visualIndex: 0
-                    splitV: sp2
-                    color: "green"
-                }
-
-                Element {
-                    visualIndex: 1
-                    splitV: sp2
-                    color: "yellow"
-                }
-
-                function updateIndex() {
-                    console.log(sp2.children.length)
-                    for (var i = 0; i < sp2.children.length; ++i)
-                        sp2.itemAt(i).visualIndex = i
+            onEntered: {
+                if (!sp2.parent.visible) {
+                    sp2.parent.visible = true
+                    var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
+                    drag.source.parent.splitV.updateIndex()
+                    item.splitV = sp2
+                    sp2.insertItem(0, item)
                 }
             }
         }

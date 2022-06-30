@@ -6,9 +6,9 @@ DropArea {
     id: root
 
     // Для перемещений в SplitView
-    required property color color
     required property SplitView splitV
-    required property int visualIndex
+    property color color: "transparent"
+    property int visualIndex: 0
 
     // Для dockable'ности
     property var targetItem: root
@@ -22,13 +22,14 @@ DropArea {
     anchors.fill: dockButton.state === "docked" ? undefined : parent
 
     onEntered: {
-        // Не дает вынести последний объект из SplitView
+        // Прячет SplitView из которого вынули последний элемент
         if (drag.source.parent.splitV.children.length === 1)
-            return
+            drag.source.parent.splitV.parent.visible = false
+
         // Перемещения в пределах одного SplitView
         if (drag.source.parent.splitV === root.splitV)
             splitV.moveItem(drag.source.parent.visualIndex, root.visualIndex)
-        // Пермещение в другой SplitView
+        // Перемещение в другой SplitView
         else {
             var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
             drag.source.parent.splitV.updateIndex()
@@ -125,12 +126,24 @@ DropArea {
             }
 
             onClicked: {
+                // Не дает убрать последний элемент из SplitView
+                if (splitV.children.length === 1
+                        && (splitView.children[0].visible === false
+                            || splitView.children[1].visible === false)
+                        && dockButton.state === "docked")
+                    return
+
                 if (dockButton.state === "docked") {
                     updateOldSize()
+                    if (splitV.children.length === 1)
+                        splitV.parent.visible = false
                     dockButton.state = "undocked"
                 }
-                else
+                else {
+                    if (splitV.parent.visible === false)
+                        splitV.parent.visible = true
                     dockButton.state = "docked"
+                }
             }
         }
     }
