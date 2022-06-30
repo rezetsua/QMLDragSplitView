@@ -17,6 +17,8 @@ DropArea {
     property color windowColor: "transparent"
 
     implicitHeight: splitV.height/splitV.children.length
+    SplitView.minimumHeight: 50
+    SplitView.fillHeight: true
     anchors.fill: dockButton.state === "docked" ? undefined : parent
 
     onEntered: {

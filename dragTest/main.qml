@@ -39,6 +39,7 @@ Window {
         // Вертикальный левый
         Item {
             implicitWidth: parent.width/2
+            SplitView.minimumWidth: 50
 
             SplitView {
                 id: sp1
@@ -68,6 +69,8 @@ Window {
 
         // Вертикальный правый
         Item {
+            SplitView.minimumWidth: 50
+
             SplitView {
                 id: sp2
                 anchors.fill: parent
