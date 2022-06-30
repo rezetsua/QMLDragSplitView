@@ -96,6 +96,7 @@ DropArea {
             id: ma
             cursorShape: dragHandler.active ? Qt.ClosedHandCursor : Qt.ArrowCursor
             anchors.fill: parent
+            onPressed: checkLastElement()
         }
 
         Button {
@@ -135,11 +136,7 @@ DropArea {
             }
 
             onClicked: {
-                if (splitV.children.length === 1
-                        && (splitView.children[0].visible === false
-                            || splitView.children[1].visible === false))
-                    lastElement = true
-
+                checkLastElement()
                 // Не дает убрать последний элемент из SplitView
                 if (lastElement && dockButton.state === "docked")
                     return
@@ -187,5 +184,12 @@ DropArea {
     function updateOldSize() {
         rect.oldWidth = rect.width
         rect.oldHeight = rect.height
+    }
+
+    function checkLastElement() {
+        if (splitV.children.length === 1
+                && (splitView.children[0].visible === false
+                    || splitView.children[1].visible === false))
+            lastElement = true
     }
 }
