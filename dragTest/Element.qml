@@ -41,6 +41,8 @@ DropArea {
     Rectangle {
         id: rect
 
+        // Нужны для запомнинания предыдущих размеров объекта
+        // (чтобы объект не жмыхало при перемещении и для инициализации минимальных размеров окна)
         property int oldWidth: 0
         property int oldHeight: 0
 
@@ -99,6 +101,7 @@ DropArea {
                 State {
                     name: "undocked"
                     ParentChange { target: targetItem; parent: undockedParent; x: 0; y: 0 }
+                    PropertyChanges { target: dragHandler; enabled: false }
                 },
                 State {
                     name: "docked"

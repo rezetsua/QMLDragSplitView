@@ -90,6 +90,7 @@ Window {
                 }
 
                 function updateIndex() {
+                    console.log(sp2.children.length)
                     for (var i = 0; i < sp2.children.length; ++i)
                         sp2.itemAt(i).visualIndex = i
                 }
