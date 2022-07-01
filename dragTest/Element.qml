@@ -7,8 +7,8 @@ DropArea {
 
     // Для перемещений в SplitView
     required property SplitView splitV
-    property color color: "transparent"
-    property int visualIndex: 0
+    required property color color
+    required property int visualIndex
 
     // Для dockable'ности
     property var targetItem: root
@@ -19,14 +19,9 @@ DropArea {
     implicitHeight: splitV.height/splitV.contentChildren.length
     SplitView.minimumHeight: 50
     SplitView.fillHeight: true
+    // Растягивает объект в оконном режиме
     anchors.fill: dockButton.state === "docked" ? undefined : parent
 
-    Connections {
-        target: mainWindow
-        function onClosing() {
-            undockedWindow.close()
-        }
-    }
 
     onEntered: {
         // Прячет SplitView из которого вынули последний элемент
@@ -39,11 +34,19 @@ DropArea {
         // Перемещение в другой SplitView
         else {
             var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
-            drag.source.parent.splitV.updateIndex()
+            updateIndex(drag.source.parent.splitV)
             item.splitV = root.splitV
             root.splitV.insertItem(root.visualIndex, item)
         }
-        splitV.updateIndex()
+        updateIndex(splitV)
+    }
+
+    // Закрывает побочные окна при закрытии основного
+    Connections {
+        target: mainWindow
+        function onClosing() {
+            undockedWindow.close()
+        }
     }
 
     Rectangle {
@@ -84,15 +87,8 @@ DropArea {
 
         DragHandler {
             id: dragHandler
-            enabled: {
-                if (lastElement)
-                    return false
-                else if (dockButton.state === "undocked")
-                    return false
-                else
-                    return true
-            }
 
+            enabled: (lastElement || dockButton.state === "undocked") ? false : true
             cursorShape: Qt.ClosedHandCursor
 
             onActiveChanged: updateOldSize()
@@ -135,13 +131,13 @@ DropArea {
                 if (dockButton.state === "docked") {
                     undockedWindow.visible = false
                     splitV.insertItem(root.visualIndex, root)
-                    splitV.updateIndex()
+                    updateIndex(splitV)
                 }
                 // Удаляет элемент из SplitView
                 else {
                     undockedWindow.visible = true
                     splitV.takeItem(visualIndex)
-                    splitV.updateIndex()
+                    updateIndex(splitV)
                 }
             }
 
@@ -149,18 +145,8 @@ DropArea {
                 // Не дает убрать последний элемент из SplitView
                 if (lastElement && dockButton.state === "docked")
                     return
-
-                if (dockButton.state === "docked") {
-                    updateOldSize()
-                    if (splitV.contentChildren.length === 1)
-                        splitV.parent.visible = false
-                    dockButton.state = "undocked"
-                }
-                else {
-                    if (splitV.parent.visible === false)
-                        splitV.parent.visible = true
-                    dockButton.state = "docked"
-                }
+                updateOldSize()
+                dockButton.state = dockButton.state === "docked" ? "undocked" : "docked"
             }
         }
     }

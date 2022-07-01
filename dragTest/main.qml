@@ -9,7 +9,7 @@ Window {
 
     property bool lastElement: sp1.count + sp2.count == 1
 
-    title: qsTr("Draggable Split View")
+    title: "Draggable Split View"
     minimumWidth: 800
     minimumHeight: 800
     visible: true
@@ -21,27 +21,10 @@ Window {
         anchors.bottomMargin: 20
         spacing: 0
 
-        Rectangle {
-            id: leftDropRect
-
+        SideDropArea {
             Layout.fillHeight: true
             Layout.preferredWidth: 20
-            color: "transparent"
-            opacity: 0.5
-
-            DropArea {
-                anchors.fill: parent
-                onEntered: {
-                    if (!sp1.parent.visible) {
-                        sp1.parent.visible = true
-                        var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
-                        drag.source.parent.splitV.updateIndex()
-                        item.splitV = sp1
-                        sp1.insertItem(0, item)
-                        sp1.updateIndex()
-                    }
-                }
-            }
+            splitV: sp1
         }
 
         SplitView {
@@ -54,11 +37,9 @@ Window {
 
             // Вертикальный левый
             Item {
-                id: leftSVParent
-
                 implicitWidth: parent.width/2
                 SplitView.minimumWidth: 50
-                onVisibleChanged: leftDropRect.color = visible ? "transparent" : "lightcoral"
+                visible: sp1.count != 0
 
                 SplitView {
                     id: sp1
@@ -77,22 +58,13 @@ Window {
                         splitV: sp1
                         color: "blue"
                     }
-
-                    function updateIndex() {
-                        if (!sp1.visible)
-                            return
-                        for (var i = 0; i < sp1.contentChildren.length; ++i)
-                            sp1.itemAt(i).visualIndex = i
-                    }
                 }
             }
 
             // Вертикальный правый
             Item {
-                id: rightSVParent
-
                 SplitView.minimumWidth: 50
-                onVisibleChanged: rightDropRect.color = visible ? "transparent" : "lightcoral"
+                visible: sp2.count != 0
 
                 SplitView {
                     id: sp2
@@ -111,38 +83,19 @@ Window {
                         splitV: sp2
                         color: "yellow"
                     }
-
-                    function updateIndex() {
-                        if (!sp2.visible)
-                            return
-                        for (var i = 0; i < sp2.contentChildren.length; ++i)
-                            sp2.itemAt(i).visualIndex = i
-                    }
                 }
             }
         }
 
-        Rectangle {
-            id: rightDropRect
-
+        SideDropArea {
             Layout.fillHeight: true
             Layout.preferredWidth: 20
-            color: "transparent"
-            opacity: 0.5
-
-            DropArea {
-                anchors.fill: parent
-                onEntered: {
-                    if (!sp2.parent.visible) {
-                        sp2.parent.visible = true
-                        var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
-                        drag.source.parent.splitV.updateIndex()
-                        item.splitV = sp2
-                        sp2.insertItem(0, item)
-                        sp2.updateIndex()
-                    }
-                }
-            }
+            splitV: sp2
         }
+    }
+
+    function updateIndex(sp) {
+        for (var i = 0; i < sp.contentChildren.length; ++i)
+            sp.itemAt(i).visualIndex = i
     }
 }
