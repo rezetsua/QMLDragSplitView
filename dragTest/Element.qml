@@ -16,7 +16,7 @@ DropArea {
     property string windowTitle: ""
     property color windowColor: "transparent"
 
-    implicitHeight: splitV.height/splitV.children.length
+    implicitHeight: splitV.height/splitV.contentChildren.length
     SplitView.minimumHeight: 50
     SplitView.fillHeight: true
     anchors.fill: dockButton.state === "docked" ? undefined : parent
@@ -30,7 +30,7 @@ DropArea {
 
     onEntered: {
         // Прячет SplitView из которого вынули последний элемент
-        if (drag.source.parent.splitV.children.length === 1)
+        if (drag.source.parent.splitV.contentChildren.length === 1)
             drag.source.parent.splitV.parent.visible = false
 
         // Перемещения в пределах одного SplitView
@@ -53,6 +53,7 @@ DropArea {
         // (чтобы объект не жмыхало при перемещении и для инициализации минимальных размеров окна)
         property int oldWidth: 0
         property int oldHeight: 0
+        property var dropArea: root
 
         width: dragHandler.active ? oldWidth : parent.width
         height: dragHandler.active ? oldHeight : parent.height
@@ -63,6 +64,10 @@ DropArea {
         states: [
             State {
                 when: dragHandler.active
+//                ParentChange {
+//                    target: rect
+//                    parent: splitV.parent
+//                }
                 AnchorChanges {
                     target: rect
                     anchors.horizontalCenter: undefined
@@ -103,7 +108,6 @@ DropArea {
             id: ma
             cursorShape: dragHandler.active ? Qt.ClosedHandCursor : Qt.ArrowCursor
             anchors.fill: parent
-            onPressed: checkLastElement()
         }
 
         Button {
@@ -132,7 +136,6 @@ DropArea {
                     undockedWindow.visible = false
                     splitV.insertItem(root.visualIndex, root)
                     splitV.updateIndex()
-                    lastElement = false
                 }
                 // Удаляет элемент из SplitView
                 else {
@@ -143,14 +146,13 @@ DropArea {
             }
 
             onClicked: {
-                checkLastElement()
                 // Не дает убрать последний элемент из SplitView
                 if (lastElement && dockButton.state === "docked")
                     return
 
                 if (dockButton.state === "docked") {
                     updateOldSize()
-                    if (splitV.children.length === 1)
+                    if (splitV.contentChildren.length === 1)
                         splitV.parent.visible = false
                     dockButton.state = "undocked"
                 }
@@ -191,12 +193,5 @@ DropArea {
     function updateOldSize() {
         rect.oldWidth = rect.width
         rect.oldHeight = rect.height
-    }
-
-    function checkLastElement() {
-        if (splitV.children.length === 1
-                && (splitView.children[0].visible === false
-                    || splitView.children[1].visible === false))
-            lastElement = true
     }
 }

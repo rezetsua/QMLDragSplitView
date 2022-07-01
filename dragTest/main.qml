@@ -7,7 +7,7 @@ import QtGraphicalEffects 1.15
 Window {
     id: mainWindow
 
-    property bool lastElement: false
+    property bool lastElement: sp1.count + sp2.count == 1
 
     title: qsTr("Draggable Split View")
     minimumWidth: 800
@@ -41,13 +41,6 @@ Window {
                         sp1.updateIndex()
                     }
                 }
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: {
-                        if (!sp1.visible && sp2.children.length === 1)
-                            lastElement = true
-                    }
-                }
             }
         }
 
@@ -61,6 +54,8 @@ Window {
 
             // Вертикальный левый
             Item {
+                id: leftSVParent
+
                 implicitWidth: parent.width/2
                 SplitView.minimumWidth: 50
                 onVisibleChanged: leftDropRect.color = visible ? "transparent" : "lightcoral"
@@ -86,7 +81,7 @@ Window {
                     function updateIndex() {
                         if (!sp1.visible)
                             return
-                        for (var i = 0; i < sp1.children.length; ++i)
+                        for (var i = 0; i < sp1.contentChildren.length; ++i)
                             sp1.itemAt(i).visualIndex = i
                     }
                 }
@@ -94,6 +89,8 @@ Window {
 
             // Вертикальный правый
             Item {
+                id: rightSVParent
+
                 SplitView.minimumWidth: 50
                 onVisibleChanged: rightDropRect.color = visible ? "transparent" : "lightcoral"
 
@@ -118,7 +115,7 @@ Window {
                     function updateIndex() {
                         if (!sp2.visible)
                             return
-                        for (var i = 0; i < sp2.children.length; ++i)
+                        for (var i = 0; i < sp2.contentChildren.length; ++i)
                             sp2.itemAt(i).visualIndex = i
                     }
                 }
@@ -143,13 +140,6 @@ Window {
                         item.splitV = sp2
                         sp2.insertItem(0, item)
                         sp2.updateIndex()
-                    }
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onPressed: {
-                        if (!sp2.visible && sp1.children.length === 1)
-                            lastElement = true
                     }
                 }
             }
