@@ -41,6 +41,13 @@ Window {
                         sp1.updateIndex()
                     }
                 }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressed: {
+                        if (!sp1.visible && sp2.children.length === 1)
+                            lastElement = true
+                    }
+                }
             }
         }
 
@@ -136,6 +143,13 @@ Window {
                         item.splitV = sp2
                         sp2.insertItem(0, item)
                         sp2.updateIndex()
+                    }
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onPressed: {
+                        if (!sp2.visible && sp1.children.length === 1)
+                            lastElement = true
                     }
                 }
             }
