@@ -38,6 +38,7 @@ Window {
                         drag.source.parent.splitV.updateIndex()
                         item.splitV = sp1
                         sp1.insertItem(0, item)
+                        sp1.updateIndex()
                     }
                 }
             }
@@ -134,6 +135,7 @@ Window {
                         drag.source.parent.splitV.updateIndex()
                         item.splitV = sp2
                         sp2.insertItem(0, item)
+                        sp2.updateIndex()
                     }
                 }
             }

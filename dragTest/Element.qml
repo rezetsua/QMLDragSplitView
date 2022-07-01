@@ -21,6 +21,13 @@ DropArea {
     SplitView.fillHeight: true
     anchors.fill: dockButton.state === "docked" ? undefined : parent
 
+    Connections {
+        target: mainWindow
+        function onClosing() {
+            undockedWindow.close()
+        }
+    }
+
     onEntered: {
         // Прячет SplitView из которого вынули последний элемент
         if (drag.source.parent.splitV.children.length === 1)
