@@ -24,10 +24,6 @@ DropArea {
 
 
     onEntered: {
-        // Прячет SplitView из которого вынули последний элемент
-        if (drag.source.parent.splitV.contentChildren.length === 1)
-            drag.source.parent.splitV.parent.visible = false
-
         // Перемещения в пределах одного SplitView
         if (drag.source.parent.splitV === root.splitV)
             splitV.moveItem(drag.source.parent.visualIndex, root.visualIndex)
