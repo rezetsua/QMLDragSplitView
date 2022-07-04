@@ -16,7 +16,7 @@ DropArea {
     property string windowTitle: ""
     property color windowColor: "transparent"
 
-    implicitHeight: splitV.height/splitV.contentChildren.length
+    SplitView.preferredHeight: splitV.height/splitV.contentChildren.length
     SplitView.minimumHeight: 50
     SplitView.fillHeight: true
     // Растягивает объект в оконном режиме
