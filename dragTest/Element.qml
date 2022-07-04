@@ -52,6 +52,7 @@ DropArea {
         // (чтобы объект не жмыхало при перемещении и для инициализации минимальных размеров окна)
         property int oldWidth: 0
         property int oldHeight: 0
+        // Запоминает родителя, т.к. при переносе родитель (parent) подменяется для движения без подергиваний
         property var dropArea: root
 
         width: dragHandler.active ? oldWidth : parent.width
@@ -61,6 +62,7 @@ DropArea {
         color: root.color
         opacity: 0.2
         states: [
+            // Для переноса объекта
             State {
                 when: dragHandler.active
                 ParentChange {
