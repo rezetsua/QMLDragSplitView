@@ -25,12 +25,12 @@ DropArea {
 
     onEntered: {
         // Перемещения в пределах одного SplitView
-        if (drag.source.parent.splitV === root.splitV)
-            splitV.moveItem(drag.source.parent.visualIndex, root.visualIndex)
+        if (drag.source.dropArea.splitV === root.splitV)
+            splitV.moveItem(drag.source.dropArea.visualIndex, root.visualIndex)
         // Перемещение в другой SplitView
         else {
-            var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
-            updateIndex(drag.source.parent.splitV)
+            var item = drag.source.dropArea.splitV.takeItem(drag.source.dropArea.visualIndex)
+            updateIndex(drag.source.dropArea.splitV)
             item.splitV = root.splitV
             root.splitV.insertItem(root.visualIndex, item)
         }
@@ -63,10 +63,14 @@ DropArea {
         states: [
             State {
                 when: dragHandler.active
-//                ParentChange {
-//                    target: rect
-//                    parent: splitV.parent
-//                }
+                ParentChange {
+                    target: rect
+                    parent: splitV.parent
+                }
+                PropertyChanges {
+                    target: rect
+                    dropArea: root
+                }
                 AnchorChanges {
                     target: rect
                     anchors.horizontalCenter: undefined

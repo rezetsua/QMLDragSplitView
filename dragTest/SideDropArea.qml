@@ -14,8 +14,8 @@ Rectangle {
         anchors.fill: parent
         onEntered: {
             if (!splitV.parent.visible) {
-                var item = drag.source.parent.splitV.takeItem(drag.source.parent.visualIndex)
-                updateIndex(drag.source.parent.splitV)
+                var item = drag.source.dropArea.splitV.takeItem(drag.source.dropArea.visualIndex)
+                updateIndex(drag.source.dropArea.splitV)
                 item.splitV = splitV
                 splitV.insertItem(0, item)
                 updateIndex(splitV)
